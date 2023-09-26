@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Runtime;
 
 namespace Quiz
 {
@@ -27,15 +28,19 @@ namespace Quiz
 
                 _text = sr.ReadToEnd();
 
+                string[] temp = _text.Split('\n');
 
-                if (_text.Contains(_login))
+                if (temp.Contains(_login + '\r'))
                 {
                     Console.WriteLine("Введите свой пароль");
                     _password = Console.ReadLine();
 
-                    
-
-
+                    if (Array.IndexOf(temp, _login + '\r') + 1 == Array.IndexOf(temp, _password + '\r'))
+                    {
+                        Console.WriteLine("Вы успеношно зашли в аккаунт");
+                    }
+                    else
+                        Console.WriteLine("Неправильный логин или пароль");
                 }
                 else
                     Console.WriteLine("Неправильный логин или пароль");
@@ -53,7 +58,10 @@ namespace Quiz
             using (StreamReader sr = new StreamReader(path))
             {
                 _text = sr.ReadToEnd();
-                if (_text.Contains(_login))
+
+                string[] temp = _text.Split('\n');
+
+                if (temp.Contains(_login))
                 {
                     Console.WriteLine("Такой логин уже существует");
                     Console.WriteLine("Введите логин:");
@@ -72,6 +80,7 @@ namespace Quiz
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+                return;
             }
             using (StreamWriter sr = new StreamWriter(path, true))
             {
