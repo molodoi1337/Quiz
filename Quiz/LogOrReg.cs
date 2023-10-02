@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Runtime;
+using System.Globalization;
 
 namespace Quiz
 {
@@ -17,36 +18,52 @@ namespace Quiz
         private string _password;
         private DateTime _date;
 
+        public string GetLogin()
+        {
+            return _login;
+        }
+
+        public string GetPassword()
+        {
+            return _password;
+        }
+
+        Game g = new Game();
 
         public void Enter()
         {
             using (StreamReader sr = new StreamReader(path))
             {
                 Console.Clear();
-                Console.WriteLine("Введите свой логин");
-                _login = Console.ReadLine();
 
                 _text = sr.ReadToEnd();
 
-                string[] temp = _text.Split('\n');
+                Console.WriteLine("Введите логин: ");
+                _login = Console.ReadLine();
 
-                if (temp.Contains(_login + '\r'))
+                if (!_text.Contains(_login) || _login.Contains("") && _login.Length < 1)
                 {
-                    Console.WriteLine("Введите свой пароль");
-                    _password = Console.ReadLine();
-
-                    if (Array.IndexOf(temp, _login + '\r') + 1 == Array.IndexOf(temp, _password + '\r'))
+                    Console.WriteLine("Логин не найден");
+                    while (!_text.Contains(_login) || _login.Contains("") && _login.Length < 1)
                     {
-                        Console.WriteLine("Вы успеношно зашли в аккаунт");
+                        Console.WriteLine("Введите логин:");
+                        _login = Console.ReadLine();
                     }
-                    else
-                        Console.WriteLine("Неправильный логин или пароль");
                 }
-                else
-                    Console.WriteLine("Неправильный логин или пароль");
+
+                Console.WriteLine("Введите пароль: ");
+                _password = Console.ReadLine();
+
+                if (!_text.Contains(_login + " " + _password))
+                    while (!_text.Contains(_login + " " + _password))
+                    {
+                        Console.WriteLine("Пароль неверный!");
+                        _password = Console.ReadLine();
+                    }
+                sr.Close();
+                g.QuizMenu();
             }
         }
-
 
         public void Registration()
         {
@@ -59,39 +76,47 @@ namespace Quiz
             {
                 _text = sr.ReadToEnd();
 
-                string[] temp = _text.Split('\n');
-
-                if (temp.Contains(_login))
+                if (_text.Contains(_login))
                 {
                     Console.WriteLine("Такой логин уже существует");
-                    Console.WriteLine("Введите логин:");
-                    _login = Console.ReadLine();
+                    while (_text.Contains(_login))
+                    {
+                        Console.WriteLine("Введите логин:");
+                        _login = Console.ReadLine();
+                    }
                 }
+                sr.Close();
             }
 
             Console.WriteLine("Введите пароль:");
             _password = Console.ReadLine();
+            if (_password.Contains(" "))
+            {
+                while (_password.Contains(" "))
+                {
+                    Console.WriteLine("Введите пароль без пробелов:");
+                    _password = Console.ReadLine();
+                }
+            }
 
-            try
+            Console.WriteLine("Введите свою дату рождения(дд.мм.гггг)");
+            string date = Console.ReadLine();
+            while (!DateTime.TryParseExact(date, "dd.MM.yyyy", null, DateTimeStyles.None, out _date))
             {
-                Console.WriteLine("Введите дату рождения:");
-                _date = DateTime.Parse(Console.ReadLine());
+                Console.WriteLine("Введите свою дату рождения(дд.мм.гггг)");
+                date = Console.ReadLine();
             }
-            catch (Exception e)
+            _date = DateTime.Parse(date);
+
+            using (StreamWriter sw = new StreamWriter(path, true))
             {
-                Console.WriteLine(e.Message);
-                return;
+                sw.WriteLine();
+                sw.Write(_login + " ");
+                sw.Write(_password + " ");
+                sw.WriteLine(_date.ToShortDateString() + "");
+                sw.Close();
             }
-            using (StreamWriter sr = new StreamWriter(path, true))
-            {
-                sr.WriteLine(_login);
-                sr.WriteLine(_password);
-                sr.WriteLine(_date);
-            }
+            Program.InternalMenu();
         }
-
-
-
-
     }
 }

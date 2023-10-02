@@ -9,26 +9,33 @@ namespace Quiz
 {
     internal class Program
     {
+        static public void InternalMenu()
+        {
+            string[] menu = { "Войти", "Зарегистрироваться", "Выйти" };
+            LogOrReg lor = new LogOrReg();
+            ConsoleMenu cm = new ConsoleMenu(menu);
+
+            switch (cm.PrintMenu())
+            {
+                case 0:
+                    lor.Enter();
+                    break;
+                case 1:
+                    lor.Registration();
+                    break;
+                case 3:
+                    return;
+            }
+        }
         static void Main(string[] args)
         {
-            string[] menu = { "Войти","Зарегистрироваться", "Выйти" };
-             ConsoleMenu cm = new ConsoleMenu(menu);
-             LogOrReg lor = new LogOrReg();
+            
+            using (FileStream fs = File.Open("D:\\Reg.txt", FileMode.OpenOrCreate))
+                fs.Close();
 
+            InternalMenu();
 
-             using (FileStream fs = File.Open(lor.path,FileMode.OpenOrCreate));
-
-             switch (cm.PrintMenu())
-             {
-                 case 0:
-                     lor.Enter();
-                     break;
-                 case 1:
-                     lor.Registration();
-                     break;
-                 case 3:
-                     return;
-             }
+            
 
 
 

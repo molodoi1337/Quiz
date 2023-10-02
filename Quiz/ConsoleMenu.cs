@@ -55,5 +55,47 @@ namespace Quiz
             }
             while (true);
         }
+
+        public int PrintMenu(string text)
+        {
+                ConsoleKeyInfo key;
+                do
+                {
+                    Console.Clear();
+                    Console.WriteLine(text);
+                    for (int i = 0; i < menuItems.Length; i++)
+                    {
+                        if (counter == i)
+                        {
+                            Console.BackgroundColor = ConsoleColor.Cyan;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.WriteLine(menuItems[i]);
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
+                        else
+                            Console.WriteLine(menuItems[i]);
+                    }
+
+                    key = Console.ReadKey(true);
+                    switch (key.Key)
+                    {
+                        case ConsoleKey.Enter:
+                            return counter;
+                        case ConsoleKey.UpArrow:
+                            counter--;
+                            if (counter == -1)
+                                counter = menuItems.Length - 1;
+                            break;
+                        case ConsoleKey.DownArrow:
+                            counter++;
+                            if (counter == menuItems.Length)
+                                counter = 0;
+                            break;
+                    }
+                }
+                while (true);
+            }
+        }
+
     }
-}
