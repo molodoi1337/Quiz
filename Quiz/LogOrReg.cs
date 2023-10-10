@@ -6,27 +6,18 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Runtime;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Quiz
 {
 
-    internal class LogOrReg
+    internal class LogOrReg : Program
     {
-        public string path = "D:\\Reg.txt";
+        public static string path = "D:\\Reg.txt";
         private string _text;
-        private string _login;
-        private string _password;
+        private static string _login;
+        private static string _password;
         private DateTime _date;
-
-        public string GetLogin()
-        {
-            return _login;
-        }
-
-        public string GetPassword()
-        {
-            return _password;
-        }
 
         Game g = new Game();
 
@@ -39,7 +30,7 @@ namespace Quiz
                 _text = sr.ReadToEnd();
 
                 Console.WriteLine("Введите логин: ");
-                _login = Console.ReadLine();
+                _login = Console.ReadLine() + ")";
 
                 if (!_text.Contains(_login) || _login.Contains("") && _login.Length < 1)
                 {
@@ -47,7 +38,7 @@ namespace Quiz
                     while (!_text.Contains(_login) || _login.Contains("") && _login.Length < 1)
                     {
                         Console.WriteLine("Введите логин:");
-                        _login = Console.ReadLine();
+                        _login = Console.ReadLine() + ")";
                     }
                 }
 
@@ -61,7 +52,7 @@ namespace Quiz
                         _password = Console.ReadLine();
                     }
                 sr.Close();
-                g.QuizMenu();
+                Program.QuizMenu();
             }
         }
 
@@ -70,7 +61,7 @@ namespace Quiz
             Console.Clear();
 
             Console.WriteLine("Введите логин:");
-            _login = Console.ReadLine();
+            _login = Console.ReadLine() + ")";
 
             using (StreamReader sr = new StreamReader(path))
             {
@@ -82,7 +73,7 @@ namespace Quiz
                     while (_text.Contains(_login))
                     {
                         Console.WriteLine("Введите логин:");
-                        _login = Console.ReadLine();
+                        _login = Console.ReadLine() + ")";
                     }
                 }
                 sr.Close();
@@ -110,13 +101,81 @@ namespace Quiz
 
             using (StreamWriter sw = new StreamWriter(path, true))
             {
-                sw.WriteLine();
                 sw.Write(_login + " ");
                 sw.Write(_password + " ");
-                sw.WriteLine(_date.ToShortDateString() + "");
+                sw.Write(_date.ToShortDateString() + "\n");
                 sw.Close();
             }
             Program.InternalMenu();
         }
+        static public void WriteFile(string s)
+        {
+            string[] lines = File.ReadAllLines(path);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (lines[i].Contains(_login))
+                {
+                    // Добавляем данные в конец строки
+                    lines[i] += " ";
+                    lines[i] += s;
+                    lines[i] += " ";
+                    lines[i] += Game.trueAnswers;
+                }
+            }
+
+            File.WriteAllLines(path, lines);
+        }
+        static public void ChangeSetting()
+        {
+            using (StreamReader sr = new StreamReader(path))
+            {
+                string line = sr.ReadLine();
+                
+
+                while (!line.Contains(_login))
+                {
+                    line = sr.ReadLine();
+                }
+                sr.Close();
+
+                Console.WriteLine("Введите новый пароль");
+                string newPassword = Console.ReadLine();
+
+                //string newLine = Regex.Replace(line, _password, newPassword);
+                string fileText = File.ReadAllText(path);
+
+                // Заменяем все вхождения старой подстроки на новую
+                string newFileText = fileText.Replace(_password, newPassword);
+
+                // Записываем измененный текст обратно в файл
+                File.WriteAllText(path, newFileText);
+            }
+        }
+
+    static public void ViewpastQuizzes()
+    {
+        Console.Clear();
+
+        using (StreamReader sr = new StreamReader("D:\\Reg.txt"))
+        {
+            Console.Clear();
+            string str = sr.ReadLine();
+
+            while (!str.Contains(_login))
+            {
+                str = sr.ReadLine();
+            }
+
+            int start = _login.Length + _password.Length + 13;
+            for (int i = start; i < str.Length; i++)
+            {
+                Console.Write(str[i]);
+            }
+
+            sr.Close();
+            Console.ReadKey();
+            Program.QuizMenu();
+        }
     }
+}
 }

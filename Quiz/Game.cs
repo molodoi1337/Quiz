@@ -10,12 +10,11 @@ using System.Text.RegularExpressions;
 
 namespace Quiz
 {
-    internal class Game
+    internal class Game : Program
     {
-        public int trueAnswers = 0;//Кол правильных ответов
+        static public int trueAnswers = 0;//Кол правильных ответов
         public string path_Reg = "D:\\Reg.txt";
         public string path_Questions = "D:\\questions.txt";
-
 
         public void Games(int first_index, int last_index)
         {
@@ -51,47 +50,9 @@ namespace Quiz
             if (last_index == 99) temp = "История";
             if (last_index == 199) temp = "География";
             if (last_index == 299) temp = "Биология";
-            WriteFile(temp);
+            LogOrReg.WriteFile(temp);
             Summarize();
-            QuizMenu();
-        }
-        public void QuizMenu()
-        {
-            string[] array1 = {
-                "Выбрать раздел викторины",
-                "Посмотреть результаты своих прошлых викторин",
-                "Посмотреть Топ-20 по конкретной викторине",
-                "Изменить настройки",
-                "Выход"
-            };
-            string[] array2 = { "История", "География", "Биология" };
-
-            ConsoleMenu cm = new ConsoleMenu(array1);
-
-            switch (cm.PrintMenu())
-            {
-                case 0:
-                    ConsoleMenu cm2 = new ConsoleMenu(array2);
-                    switch (cm2.PrintMenu())
-                    {
-                        case 0:
-                            Games(0, 99);
-                            break;
-                        case 1:
-                            Games(100, 199);
-                            break;
-                        case 2:
-                            Games(200, 299);
-                            break;
-                    }
-                    break;
-                case 1:
-                    ViewpastQuizzes();
-                    break;
-                case 2:
-                    //Top_20();
-                    break;
-            }
+            Program.QuizMenu();
         }
         /*public void Top_20()
         {
@@ -140,20 +101,6 @@ namespace Quiz
                 }
             }
         }*/
-        public void Summarize()
-        {
-            Console.Clear();
-            Console.WriteLine("Правильных ответов: " + trueAnswers);
-            trueAnswers = 0;
-            Console.ReadKey();
-        }
-        public void WriteFile(string s)
-        {
-            using (StreamWriter sr = new StreamWriter(path_Reg, true))
-            {
-                sr.Write(" " + s + " " + trueAnswers);
-            }
-        }
         public int FindFirstIndex(string str, string[] substrings)
         {
             int firstIndex = -1;
@@ -171,32 +118,13 @@ namespace Quiz
             }
             return firstIndex;
         }
-        public void ViewpastQuizzes()
+      
+        public void Summarize()
         {
             Console.Clear();
-            LogOrReg l = new LogOrReg();
-
-            using (StreamReader sr = new StreamReader(path_Reg))
-            {
-                Console.Clear();
-                string str = sr.ReadToEnd();
-
-                string[] substrings = { "История", "Биология", "География" };
-
-                int firstIndex = FindFirstIndex(str, substrings);
-
-                int size = l.GetLogin().Length + l.GetPassword().Length + 12;
-
-                for (int i = firstIndex; i < size; i++)
-                {
-                    Console.WriteLine(str[i]);
-                }
-                sr.Close();
-                Console.ReadKey();
-                QuizMenu();
-            }
+            Console.WriteLine("Правильных ответов: " + trueAnswers);
+            trueAnswers = 0;
             Console.ReadKey();
-            QuizMenu();
-        }
+        }       
     }
 }
