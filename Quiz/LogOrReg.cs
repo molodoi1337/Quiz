@@ -17,7 +17,7 @@ namespace Quiz
         private string _text;
         private static string _login;
         private static string _password;
-        private DateTime _date;
+        private static DateTime _date;
 
         Game g = new Game();
 
@@ -30,7 +30,7 @@ namespace Quiz
                 _text = sr.ReadToEnd();
 
                 Console.WriteLine("Введите логин: ");
-                _login = Console.ReadLine() + ")";
+                _login = Console.ReadLine();
 
                 if (!_text.Contains(_login) || _login.Contains("") && _login.Length < 1)
                 {
@@ -38,7 +38,7 @@ namespace Quiz
                     while (!_text.Contains(_login) || _login.Contains("") && _login.Length < 1)
                     {
                         Console.WriteLine("Введите логин:");
-                        _login = Console.ReadLine() + ")";
+                        _login = Console.ReadLine();
                     }
                 }
 
@@ -61,7 +61,7 @@ namespace Quiz
             Console.Clear();
 
             Console.WriteLine("Введите логин:");
-            _login = Console.ReadLine() + ")";
+            _login = Console.ReadLine();
 
             using (StreamReader sr = new StreamReader(path))
             {
@@ -73,7 +73,7 @@ namespace Quiz
                     while (_text.Contains(_login))
                     {
                         Console.WriteLine("Введите логин:");
-                        _login = Console.ReadLine() + ")";
+                        _login = Console.ReadLine();
                     }
                 }
                 sr.Close();
@@ -141,14 +141,13 @@ namespace Quiz
                 Console.WriteLine("Введите новый пароль");
                 string newPassword = Console.ReadLine();
 
-                //string newLine = Regex.Replace(line, _password, newPassword);
                 string fileText = File.ReadAllText(path);
 
                 // Заменяем все вхождения старой подстроки на новую
-                string newFileText = fileText.Replace(_password, newPassword);
+                string Password = fileText.Replace(_password, newPassword);
 
                 // Записываем измененный текст обратно в файл
-                File.WriteAllText(path, newFileText);
+                File.WriteAllText(path, Password);    
             }
         }
 

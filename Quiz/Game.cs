@@ -100,25 +100,7 @@ namespace Quiz
                     Console.WriteLine(line);
                 }
             }
-        }*/
-        public int FindFirstIndex(string str, string[] substrings)
-        {
-            int firstIndex = -1;
-
-            foreach (string substring in substrings)
-            {
-                int index = str.IndexOf(substring);
-                if (index != -1)
-                {
-                    if (firstIndex == -1 || index < firstIndex)
-                    {
-                        firstIndex = index;
-                    }
-                }
-            }
-            return firstIndex;
-        }
-      
+        }*/   
         public void Summarize()
         {
             Console.Clear();
